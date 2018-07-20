@@ -4,10 +4,13 @@ const bcrypt = require("bcrypt");
 
 const _ = require("underscore");
 
+const { tokenVerification, verifyAdmin } = require('../middlewares/authorization');
 
 const User = require("../model/user");
 
-app.get('/user', function(req, res) {
+console.log(tokenVerification);
+
+app.get('/user', tokenVerification, function(req, res) {
 
     let skip = req.query.skip || 0;
 
@@ -39,7 +42,7 @@ app.get('/user', function(req, res) {
         }))
 })
 
-app.post('/user', function(req, res) {
+app.post('/user', [tokenVerification, verifyAdmin], function(req, res) {
 
     let body = req.body;
 
@@ -68,7 +71,7 @@ app.post('/user', function(req, res) {
 
 })
 
-app.put('/user/:id', function(req, res) {
+app.put('/user/:id', [tokenVerification, verifyAdmin], function(req, res) {
 
     let id = req.params.id;
     let body = _.pick(req.body, ['name',
@@ -96,7 +99,7 @@ app.put('/user/:id', function(req, res) {
 
 })
 
-app.delete('/user/:id', function(req, res) {
+app.delete('/user/:id', [tokenVerification, verifyAdmin], function(req, res) {
 
     let id = req.params.id;
 
